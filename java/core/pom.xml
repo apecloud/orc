@@ -23,7 +23,7 @@
     <relativePath>../pom.xml</relativePath>
   </parent>
 
-  <artifactId>orc-core</artifactId>
+  <artifactId>arcticfox-orc-core</artifactId>
   <packaging>jar</packaging>
   <name>ORC Core</name>
   <description>
