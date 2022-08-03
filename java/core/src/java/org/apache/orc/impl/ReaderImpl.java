@@ -47,6 +47,7 @@ import org.apache.orc.StripeStatistics;
 import org.apache.orc.TypeDescription;
 import org.apache.orc.impl.reader.ReaderEncryption;
 import org.apache.orc.impl.reader.ReaderEncryptionVariant;
+import org.jetbrains.annotations.TestOnly;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -91,6 +92,9 @@ public class ReaderImpl implements Reader {
   private final String softwareVersion;
 
   protected final OrcTail tail;
+
+  protected OrcProto.StripeFooter singleStripeFooter;
+  protected OrcIndex singleOrcIndex;
 
   public static class StripeInformationImpl
       implements StripeInformation {
@@ -568,6 +572,11 @@ public class ReaderImpl implements Reader {
       } else {
         checkOrcVersion(path, orcTail.getPostScript());
         tail = orcTail;
+        //Todo: file won't be inited if orcTail is not null ?
+        file = getFileSystem().open(path);
+
+        this.singleStripeFooter = options.getStripeFooter();
+        this.singleOrcIndex = options.getOrcIndex();
       }
       this.compressionKind = tail.getCompressionKind();
       this.bufferSize = tail.getCompressionBufferSize();
@@ -590,6 +599,19 @@ public class ReaderImpl implements Reader {
           footer.getSoftwareVersion());
     }
     this.types = OrcUtils.getOrcTypes(schema);
+  }
+
+  public OrcProto.StripeFooter getSingleStripeFooter() {
+    return singleStripeFooter;
+  }
+
+  public OrcIndex getSingleOrcIndex() {
+    return singleOrcIndex;
+  }
+
+  @TestOnly
+  public OrcTail getOrcTail() {
+    return tail;
   }
 
   protected FileSystem getFileSystem() throws IOException {

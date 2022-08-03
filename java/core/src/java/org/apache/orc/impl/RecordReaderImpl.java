@@ -115,6 +115,7 @@ public class RecordReaderImpl implements RecordReader {
       "1.6.0", "1.6.1", "1.6.2", "1.6.3", "1.6.4", "1.6.5", "1.6.6", "1.6.7", "1.6.8",
       "1.6.9", "1.6.10", "1.6.11", "1.7.0"};
 
+  private final OrcProto.StripeFooter singleStripeFooter;
   /**
    * Given a list of column names, find the given column and return the index.
    *
@@ -351,6 +352,12 @@ public class RecordReaderImpl implements RecordReader {
                                 dataReader, writerVersion, ignoreNonUtf8BloomFilter,
                                 maxDiskRangeChunkLimit, filterColIds);
 
+    this.singleStripeFooter = fileReader.getSingleStripeFooter();
+    // Customized orc used in ArcticFox:
+    // 1 orc file only has 1 stripe, stripe and OrcIndex can be inited outside.
+    planner.setSingleStripeFooter(singleStripeFooter);
+    planner.setSingleOrcIndex(fileReader.getSingleOrcIndex());
+
     try {
       advanceToNextRow(reader, 0L, true);
     } catch (Exception e) {
@@ -418,6 +425,11 @@ public class RecordReaderImpl implements RecordReader {
   public OrcProto.StripeFooter readStripeFooter(StripeInformation stripe
                                                 ) throws IOException {
     return dataReader.readStripeFooter(stripe);
+  }
+
+  public OrcProto.StripeFooter readFirstStripeFooter(
+  ) throws IOException {
+    return dataReader.readStripeFooter(stripes.get(0));
   }
 
   enum Location {
@@ -1260,7 +1272,7 @@ public class RecordReaderImpl implements RecordReader {
 
   private StripeInformation beginReadStripe() throws IOException {
     StripeInformation stripe = stripes.get(currentStripe);
-    stripeFooter = readStripeFooter(stripe);
+    stripeFooter = singleStripeFooter == null ? readStripeFooter(stripe): singleStripeFooter;
     clearStreams();
     // setup the position in the stripe
     rowCountInStripe = stripe.getNumberOfRows();

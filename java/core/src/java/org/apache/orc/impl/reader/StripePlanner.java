@@ -86,6 +86,9 @@ public class StripePlanner {
   // identifies the filter column ids whose streams should always be read
   private final Set<Integer> filterColIds;
 
+  private OrcProto.StripeFooter singleStripeFooter;
+  private OrcIndex singleOrcIndex;
+
   /**
    * Create a stripe parser.
    * @param schema the file schema
@@ -138,7 +141,7 @@ public class StripePlanner {
    */
   public StripePlanner parseStripe(StripeInformation stripe,
                                    boolean[] columnInclude) throws IOException {
-    OrcProto.StripeFooter footer = dataReader.readStripeFooter(stripe);
+    OrcProto.StripeFooter footer = singleStripeFooter == null ? dataReader.readStripeFooter(stripe): singleStripeFooter;
     currentStripeId = stripe.getStripeId();
     originalStripeId = stripe.getEncryptionStripeId();
     writerTimezone = footer.getWriterTimezone();
@@ -155,6 +158,14 @@ public class StripePlanner {
       }
     }
     return this;
+  }
+
+  public void setSingleOrcIndex(OrcIndex singleOrcIndex) {
+    this.singleOrcIndex = singleOrcIndex;
+  }
+
+  public void setSingleStripeFooter(OrcProto.StripeFooter singleStripeFooter) {
+    this.singleStripeFooter = singleStripeFooter;
   }
 
   /**
@@ -381,6 +392,10 @@ public class StripePlanner {
    */
   public OrcIndex readRowIndex(boolean[] sargColumns,
                                OrcIndex output) throws IOException {
+    if(singleOrcIndex != null) {
+      output = singleOrcIndex;
+      return output;
+    }
     int typeCount = schema.getMaximumId() + 1;
     if (output == null) {
       output = new OrcIndex(new OrcProto.RowIndex[typeCount],
