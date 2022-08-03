@@ -36,6 +36,19 @@
   </description>
   <inceptionYear>2013</inceptionYear>
 
+  <distributionManagement>
+    <repository>
+      <id>nexus-releases</id>
+      <name>maven-releases</name>
+      <url>http://52.83.27.129:8081/repository/maven-releases/</url>
+    </repository>
+    <snapshotRepository>
+      <id>nexus-snapshots</id>
+      <name>maven-snapshots</name>
+      <url>http://52.83.27.129:8081/repository/maven-snapshots/</url>
+    </snapshotRepository>
+  </distributionManagement>
+
   <mailingLists>
     <mailingList>
       <name>ORC User List</name>
@@ -76,7 +89,6 @@
     <slf4j.version>1.7.33</slf4j.version>
     <protoc.artifact>com.google.protobuf:protoc:2.5.0</protoc.artifact>
     <surefire.version>3.0.0-M5</surefire.version>
-    <junit.version>5.8.2</junit.version>
     <mockito.version>3.11.2</mockito.version>
   </properties>
 
@@ -821,19 +833,7 @@
         <version>1.5.0</version>
       </dependency>
 
-      <!-- test inter-project -->
-      <dependency>
-        <groupId>org.objenesis</groupId>
-        <artifactId>objenesis</artifactId>
-        <version>3.1</version>
-        <scope>test</scope>
-      </dependency>
-      <dependency>
-        <groupId>net.bytebuddy</groupId>
-        <artifactId>byte-buddy</artifactId>
-        <version>1.10.19</version>
-        <scope>test</scope>
-      </dependency>
+
     </dependencies>
   </dependencyManagement>
 </project>
