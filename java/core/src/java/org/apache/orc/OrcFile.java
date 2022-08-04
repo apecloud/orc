@@ -31,7 +31,6 @@ import org.apache.orc.impl.ReaderImpl;
 import org.apache.orc.impl.WriterImpl;
 import org.apache.orc.impl.WriterInternal;
 import org.apache.orc.impl.writer.WriterImplV2;
-import org.apache.orc.impl.OrcIndex;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -290,7 +289,7 @@ public class OrcFile {
     private boolean useProlepticGregorian;
 
     private OrcProto.StripeFooter stripeFooter;
-    private OrcIndex orcIndex;
+    private OrcProto.RowIndex[] rowGroupIndex;
 
     public ReaderOptions(Configuration conf) {
       this.conf = conf;
@@ -384,13 +383,13 @@ public class OrcFile {
       return this;
     }
 
-    public ReaderOptions orcIndex(OrcIndex orcIndex) {
-      this.orcIndex = orcIndex;
+    public ReaderOptions rowGroupIndex(OrcProto.RowIndex[] rowGroupIndex) {
+      this.rowGroupIndex = rowGroupIndex;
       return this;
     }
 
-    public OrcIndex getOrcIndex() {
-      return orcIndex;
+    public OrcProto.RowIndex[] getRowGroupIndex() {
+      return rowGroupIndex;
     }
 
     public OrcProto.StripeFooter getStripeFooter() {

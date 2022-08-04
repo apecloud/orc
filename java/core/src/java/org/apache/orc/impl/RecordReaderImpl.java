@@ -356,7 +356,7 @@ public class RecordReaderImpl implements RecordReader {
     // Customized orc used in ArcticFox:
     // 1 orc file only has 1 stripe, stripe and OrcIndex can be inited outside.
     planner.setSingleStripeFooter(singleStripeFooter);
-    planner.setSingleOrcIndex(fileReader.getSingleOrcIndex());
+    planner.setSingleRowGroupIndex(fileReader.getSingleRowGroupIndex());
 
     try {
       advanceToNextRow(reader, 0L, true);

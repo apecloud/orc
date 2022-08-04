@@ -87,7 +87,7 @@ public class StripePlanner {
   private final Set<Integer> filterColIds;
 
   private OrcProto.StripeFooter singleStripeFooter;
-  private OrcIndex singleOrcIndex;
+  private OrcProto.RowIndex[] singleRowGroupIndex;
 
   /**
    * Create a stripe parser.
@@ -160,8 +160,8 @@ public class StripePlanner {
     return this;
   }
 
-  public void setSingleOrcIndex(OrcIndex singleOrcIndex) {
-    this.singleOrcIndex = singleOrcIndex;
+  public void setSingleRowGroupIndex(OrcProto.RowIndex[] singleRowGroupIndex) {
+    this.singleRowGroupIndex = singleRowGroupIndex;
   }
 
   public void setSingleStripeFooter(OrcProto.StripeFooter singleStripeFooter) {
@@ -392,10 +392,6 @@ public class StripePlanner {
    */
   public OrcIndex readRowIndex(boolean[] sargColumns,
                                OrcIndex output) throws IOException {
-    if(singleOrcIndex != null) {
-      output = singleOrcIndex;
-      return output;
-    }
     int typeCount = schema.getMaximumId() + 1;
     if (output == null) {
       output = new OrcIndex(new OrcProto.RowIndex[typeCount],
@@ -404,6 +400,10 @@ public class StripePlanner {
     }
     System.arraycopy(bloomFilterKinds, 0, output.getBloomFilterKinds(), 0,
         bloomFilterKinds.length);
+    // when RowIndex has been inited, init bloom filter only
+    if(singleRowGroupIndex != null) {
+      return readBloomFilter(sargColumns, output);
+    }
     BufferChunkList ranges = planIndexReading(sargColumns);
     dataReader.readFileData(ranges, false);
     OrcProto.RowIndex[] indexes = output.getRowGroupIndex();
@@ -430,6 +430,50 @@ public class StripePlanner {
       }
     }
     return output;
+  }
+
+  public OrcIndex readBloomFilter(boolean[] sargColumns, OrcIndex output) throws IOException {
+    System.arraycopy(singleRowGroupIndex, 0, output.getRowGroupIndex(), 0,
+            singleRowGroupIndex.length);
+    planBloomFilterReading(sargColumns);
+    OrcProto.BloomFilterIndex[] blooms = output.getBloomFilterIndex();
+    for(StreamInformation stream: indexStreams) {
+      int column = stream.column;
+      if (stream.firstChunk != null) {
+        CodedInputStream data = InStream.createCodedInputStream(InStream.create(
+                "index", stream.firstChunk, stream.offset,
+                stream.length, getStreamOptions(column, stream.kind)));
+        switch (stream.kind) {
+          case BLOOM_FILTER:
+          case BLOOM_FILTER_UTF8:
+            if (sargColumns != null && sargColumns[column]) {
+              blooms[column] = OrcProto.BloomFilterIndex.parseFrom(data);
+            }
+            break;
+          default:
+            break;
+        }
+      }
+    }
+    return output;
+  }
+
+  private BufferChunkList planBloomFilterReading(boolean[] bloomFilterColumns) {
+    BufferChunkList result = new BufferChunkList();
+    for(StreamInformation stream: indexStreams) {
+      switch (stream.kind) {
+        case BLOOM_FILTER:
+        case BLOOM_FILTER_UTF8:
+          if (bloomFilterColumns[stream.column] &&
+                  bloomFilterKinds[stream.column] == stream.kind) {
+            addChunk(result, stream, stream.offset, stream.length);
+          }
+          break;
+        default:
+          break;
+      }
+    }
+    return result;
   }
 
   private void addChunk(BufferChunkList list, StreamInformation stream,

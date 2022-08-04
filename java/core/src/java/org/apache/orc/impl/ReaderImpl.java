@@ -94,7 +94,7 @@ public class ReaderImpl implements Reader {
   protected final OrcTail tail;
 
   protected OrcProto.StripeFooter singleStripeFooter;
-  protected OrcIndex singleOrcIndex;
+  protected OrcProto.RowIndex[] singleRowGroupIndex;
 
   public static class StripeInformationImpl
       implements StripeInformation {
@@ -574,7 +574,7 @@ public class ReaderImpl implements Reader {
         tail = orcTail;
 
         this.singleStripeFooter = options.getStripeFooter();
-        this.singleOrcIndex = options.getOrcIndex();
+        this.singleRowGroupIndex = options.getRowGroupIndex();
       }
       this.compressionKind = tail.getCompressionKind();
       this.bufferSize = tail.getCompressionBufferSize();
@@ -603,8 +603,8 @@ public class ReaderImpl implements Reader {
     return singleStripeFooter;
   }
 
-  public OrcIndex getSingleOrcIndex() {
-    return singleOrcIndex;
+  public OrcProto.RowIndex[] getSingleRowGroupIndex() {
+    return singleRowGroupIndex;
   }
 
   @TestOnly
