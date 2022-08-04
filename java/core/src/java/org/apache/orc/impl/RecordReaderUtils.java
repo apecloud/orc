@@ -99,6 +99,11 @@ public class RecordReaderUtils {
     public BufferChunkList readFileData(BufferChunkList range,
                                         boolean doForceDirect
                                         ) throws IOException {
+      // isOpen is false if we initialize StripeFooter outside.
+      // function readStripeFooter() won't be called.
+      if(!isOpen) {
+        open();
+      }
       RecordReaderUtils.readDiskRanges(file, zcr, range, doForceDirect);
       return range;
     }

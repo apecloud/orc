@@ -572,8 +572,6 @@ public class ReaderImpl implements Reader {
       } else {
         checkOrcVersion(path, orcTail.getPostScript());
         tail = orcTail;
-        //Todo: file won't be inited if orcTail is not null ?
-        file = getFileSystem().open(path);
 
         this.singleStripeFooter = options.getStripeFooter();
         this.singleOrcIndex = options.getOrcIndex();
