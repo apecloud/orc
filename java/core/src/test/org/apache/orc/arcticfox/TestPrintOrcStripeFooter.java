@@ -1,7 +1,5 @@
 package org.apache.orc.arcticfox;
 
-import com.google.protobuf.InvalidProtocolBufferException;
-
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
@@ -36,15 +34,8 @@ public class TestPrintOrcStripeFooter {
         List<Object> orcIndexStripeFooterOrcTail = getRecordReaderImpl(ORC_FILE_PATH);
         OrcProto.StripeFooter stripeFooter = (OrcProto.StripeFooter) orcIndexStripeFooterOrcTail.get(1);
 
-        ByteBuffer byteBuffer = SerializeUtils.serializeStripeFooter(stripeFooter);
-        OrcProto.StripeFooter stripeFooterSerialize = null;
-
-        try {
-            stripeFooterSerialize = SerializeUtils.deserializeStripeFooter(byteBuffer);
-        } catch (InvalidProtocolBufferException e) {
-            e.printStackTrace();
-        }
-        assert stripeFooter.equals(stripeFooterSerialize);
+        ByteBuffer byteBuffer = OrcSerializeUtils.serializeStripeFooter(stripeFooter);
+        assert stripeFooter.equals(OrcSerializeUtils.deserializeStripeFooter(byteBuffer));
     }
 
     @Test
@@ -55,8 +46,8 @@ public class TestPrintOrcStripeFooter {
         OrcProto.StripeFooter stripeFooter = (OrcProto.StripeFooter) orcIndexStripeFooterOrcTail.get(1);
         OrcProto.RowIndex[] rowGroupIndex = (OrcProto.RowIndex[]) orcIndexStripeFooterOrcTail.get(2);
 
-        ByteBuffer byteBuffer = SerializeUtils.serializeRowIndex(rowGroupIndex);
-        OrcProto.RowIndex[] rowGroupIndexSerialize = SerializeUtils.deserializeRowIndex(
+        ByteBuffer byteBuffer = OrcSerializeUtils.serializeRowIndex(rowGroupIndex);
+        OrcProto.RowIndex[] rowGroupIndexSerialize = OrcSerializeUtils.deserializeRowIndex(
                 byteBuffer, stripeFooter.getColumnsCount());
 
         assert Arrays.equals(rowGroupIndex, rowGroupIndexSerialize);

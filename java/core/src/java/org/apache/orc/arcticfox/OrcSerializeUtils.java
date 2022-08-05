@@ -3,14 +3,17 @@ package org.apache.orc.arcticfox;
 import com.google.protobuf.CodedInputStream;
 import com.google.protobuf.InvalidProtocolBufferException;
 import org.apache.orc.OrcProto;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
 
 
-public class SerializeUtils {
+public class OrcSerializeUtils {
 
+    private static final Logger LOG = LoggerFactory.getLogger(OrcSerializeUtils.class);
     public static ByteBuffer serializeStripeFooter(OrcProto.StripeFooter stripeFooter) {
         if(stripeFooter == null) {
             return null;
@@ -19,12 +22,16 @@ public class SerializeUtils {
         return ByteBuffer.wrap(stripeFooterBytes);
     }
 
-    public static OrcProto.StripeFooter deserializeStripeFooter(ByteBuffer byteBuffer)
-            throws InvalidProtocolBufferException {
+    public static OrcProto.StripeFooter deserializeStripeFooter(ByteBuffer byteBuffer) {
         if(byteBuffer == null || byteBuffer.array().length == 0) {
             return null;
         }
-        return OrcProto.StripeFooter.parseFrom(byteBuffer.array());
+        try {
+            return OrcProto.StripeFooter.parseFrom(byteBuffer.array());
+        } catch (InvalidProtocolBufferException e) {
+            LOG.warn("Failed to parse stripe footer, " + e.getMessage());
+            return null;
+        }
     }
 
     public static ByteBuffer serializeRowIndex(OrcProto.RowIndex[] rowGroupIndex) {
@@ -100,6 +107,4 @@ public class SerializeUtils {
                 (byte) (a & 0xFF)
         };
     }
-
-
 }
