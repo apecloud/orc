@@ -12,16 +12,25 @@ import java.util.Arrays;
 public class SerializeUtils {
 
     public static ByteBuffer serializeStripeFooter(OrcProto.StripeFooter stripeFooter) {
+        if(stripeFooter == null) {
+            return null;
+        }
         byte[] stripeFooterBytes = stripeFooter.toByteArray();
         return ByteBuffer.wrap(stripeFooterBytes);
     }
 
-    public static OrcProto.StripeFooter deserializeStripeFooter(ByteBuffer buffer)
+    public static OrcProto.StripeFooter deserializeStripeFooter(ByteBuffer byteBuffer)
             throws InvalidProtocolBufferException {
-        return OrcProto.StripeFooter.parseFrom(buffer.array());
+        if(byteBuffer == null || byteBuffer.array().length == 0) {
+            return null;
+        }
+        return OrcProto.StripeFooter.parseFrom(byteBuffer.array());
     }
 
     public static ByteBuffer serializeRowIndex(OrcProto.RowIndex[] rowGroupIndex) {
+        if(rowGroupIndex == null || rowGroupIndex.length == 0) {
+            return null;
+        }
         int rowIndexCount = rowGroupIndex.length;
         int[] rowIndexLengthList = new int[rowGroupIndex.length];
         int index = 0;

@@ -66,22 +66,17 @@ public class TestPrintOrcStripeFooter {
     public List<Object> getRecordReaderImpl(String filePathStr) {
         Path filePath = new Path(filePathStr);
         List<Object> res = null;
-        RecordReaderImpl recordReaderImpl;
         try {
             Reader reader = OrcFile.createReader(filePath, OrcFile.readerOptions(new Configuration()));
             TypeDescription readSchema = reader.getSchema();
             RecordReader recordReader = reader.rows(reader.options()
                     .schema(readSchema));
             assert recordReader != null;
-            recordReaderImpl = (RecordReaderImpl) recordReader;
+            RecordReaderImpl recordReaderImpl = (RecordReaderImpl) recordReader;
 
-            int columnCount = readSchema.getMaximumId() + 1;
-            boolean[] readCols = new boolean[columnCount];
-            Arrays.fill(readCols, true);
-            OrcProto.RowIndex[] rowGroupIndex =
-                    recordReaderImpl.readRowIndex(0, null, readCols).getRowGroupIndex();
-            OrcProto.StripeFooter stripeFooter = recordReaderImpl.readFirstStripeFooter();
             OrcTail orcTail = ((ReaderImpl) reader).getOrcTail();
+            OrcProto.RowIndex[] rowGroupIndex = recordReaderImpl.getRowGroupIndex(0);
+            OrcProto.StripeFooter stripeFooter = recordReaderImpl.getStripeFooter(0);
             res = Arrays.asList(orcTail, stripeFooter, rowGroupIndex);
         } catch (IOException e) {
             e.printStackTrace();

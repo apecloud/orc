@@ -427,9 +427,21 @@ public class RecordReaderImpl implements RecordReader {
     return dataReader.readStripeFooter(stripe);
   }
 
-  public OrcProto.StripeFooter readFirstStripeFooter(
-  ) throws IOException {
-    return dataReader.readStripeFooter(stripes.get(0));
+  public OrcProto.StripeFooter getStripeFooter(int stripeIndex) throws IOException {
+    return dataReader.readStripeFooter(stripes.get(stripeIndex));
+  }
+
+  public OrcProto.RowIndex[] getRowGroupIndex(int stripeIndex) {
+    OrcProto.RowIndex[] res = null;
+    int columnCount = schema.getMaximumId() + 1;
+    boolean[] readCols = new boolean[columnCount];
+    Arrays.fill(readCols, true);
+    try {
+      res = readRowIndex(stripeIndex, null, readCols).getRowGroupIndex();
+    } catch (IOException e) {
+      LOG.warn("Get row group index from first Stripe failed, " + e.getMessage());
+    }
+    return res;
   }
 
   enum Location {
