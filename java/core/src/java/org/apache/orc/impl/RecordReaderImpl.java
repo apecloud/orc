@@ -352,9 +352,9 @@ public class RecordReaderImpl implements RecordReader {
                                 dataReader, writerVersion, ignoreNonUtf8BloomFilter,
                                 maxDiskRangeChunkLimit, filterColIds);
 
-    this.singleStripeFooter = fileReader.getSingleStripeFooter();
     // Customized orc used in ArcticFox:
-    // 1 orc file only has 1 stripe, stripe and OrcIndex can be inited outside.
+    // 1 orc file only has 1 stripe, stripe and RowGroupIndex can be inited outside.
+    this.singleStripeFooter = fileReader.getSingleStripeFooter();
     planner.setSingleStripeFooter(singleStripeFooter);
     planner.setSingleRowGroupIndex(fileReader.getSingleRowGroupIndex());
 
@@ -433,11 +433,10 @@ public class RecordReaderImpl implements RecordReader {
 
   public OrcProto.RowIndex[] getRowGroupIndex(int stripeIndex) {
     OrcProto.RowIndex[] res = null;
-    int columnCount = schema.getMaximumId() + 1;
-    boolean[] readCols = new boolean[columnCount];
+    boolean[] readCols = new boolean[schema.getMaximumId() + 1];
     Arrays.fill(readCols, true);
     try {
-      res = readRowIndex(stripeIndex, null, readCols).getRowGroupIndex();
+      res = readRowIndex(stripeIndex, readCols, readCols).getRowGroupIndex();
     } catch (IOException e) {
       LOG.warn("Get row group index from first Stripe failed, " + e.getMessage());
     }

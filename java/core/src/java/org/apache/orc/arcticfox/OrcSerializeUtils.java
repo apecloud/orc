@@ -92,14 +92,14 @@ public class OrcSerializeUtils {
         return rowGroupIndex;
     }
 
-    public static int byteArrayToInt(byte[] b, int offset) {
+    private static int byteArrayToInt(byte[] b, int offset) {
         return   b[offset + 3] & 0xFF |
                 (b[offset + 2] & 0xFF) << 8 |
                 (b[offset + 1] & 0xFF) << 16 |
                 (b[offset] & 0xFF) << 24;
     }
 
-    public static byte[] intToByteArray(int a) {
+    private static byte[] intToByteArray(int a) {
         return new byte[] {
                 (byte) ((a >> 24) & 0xFF),
                 (byte) ((a >> 16) & 0xFF),

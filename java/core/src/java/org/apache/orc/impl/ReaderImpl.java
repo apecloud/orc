@@ -47,7 +47,6 @@ import org.apache.orc.StripeStatistics;
 import org.apache.orc.TypeDescription;
 import org.apache.orc.impl.reader.ReaderEncryption;
 import org.apache.orc.impl.reader.ReaderEncryptionVariant;
-import org.jetbrains.annotations.TestOnly;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -607,7 +606,6 @@ public class ReaderImpl implements Reader {
     return singleRowGroupIndex;
   }
 
-  @TestOnly
   public OrcTail getOrcTail() {
     return tail;
   }

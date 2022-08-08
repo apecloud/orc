@@ -435,13 +435,14 @@ public class StripePlanner {
   public OrcIndex readBloomFilter(boolean[] sargColumns, OrcIndex output) throws IOException {
     System.arraycopy(singleRowGroupIndex, 0, output.getRowGroupIndex(), 0,
             singleRowGroupIndex.length);
-    planBloomFilterReading(sargColumns);
+    BufferChunkList ranges = planBloomFilterReading(sargColumns);
+    dataReader.readFileData(ranges, false);
     OrcProto.BloomFilterIndex[] blooms = output.getBloomFilterIndex();
     for(StreamInformation stream: indexStreams) {
       int column = stream.column;
       if (stream.firstChunk != null) {
         CodedInputStream data = InStream.createCodedInputStream(InStream.create(
-                "index", stream.firstChunk, stream.offset,
+                "bloom filter", stream.firstChunk, stream.offset,
                 stream.length, getStreamOptions(column, stream.kind)));
         switch (stream.kind) {
           case BLOOM_FILTER:
