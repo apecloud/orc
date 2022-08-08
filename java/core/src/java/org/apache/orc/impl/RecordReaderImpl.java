@@ -431,16 +431,10 @@ public class RecordReaderImpl implements RecordReader {
     return dataReader.readStripeFooter(stripes.get(stripeIndex));
   }
 
-  public OrcProto.RowIndex[] getRowGroupIndex(int stripeIndex) {
-    OrcProto.RowIndex[] res = null;
+  public OrcProto.RowIndex[] getRowGroupIndex(int stripeIndex) throws IOException {
     boolean[] readCols = new boolean[schema.getMaximumId() + 1];
     Arrays.fill(readCols, true);
-    try {
-      res = readRowIndex(stripeIndex, readCols, readCols).getRowGroupIndex();
-    } catch (IOException e) {
-      LOG.warn("Get row group index from first Stripe failed, " + e.getMessage());
-    }
-    return res;
+    return readRowIndex(stripeIndex, readCols, readCols).getRowGroupIndex();
   }
 
   enum Location {

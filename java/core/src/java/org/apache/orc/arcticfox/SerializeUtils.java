@@ -3,17 +3,14 @@ package org.apache.orc.arcticfox;
 import com.google.protobuf.CodedInputStream;
 import com.google.protobuf.InvalidProtocolBufferException;
 import org.apache.orc.OrcProto;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
 
 
-public class OrcSerializeUtils {
+public class SerializeUtils {
 
-    private static final Logger LOG = LoggerFactory.getLogger(OrcSerializeUtils.class);
     public static ByteBuffer serializeStripeFooter(OrcProto.StripeFooter stripeFooter) {
         if(stripeFooter == null) {
             return null;
@@ -22,16 +19,11 @@ public class OrcSerializeUtils {
         return ByteBuffer.wrap(stripeFooterBytes);
     }
 
-    public static OrcProto.StripeFooter deserializeStripeFooter(ByteBuffer byteBuffer) {
+    public static OrcProto.StripeFooter deserializeStripeFooter(ByteBuffer byteBuffer) throws InvalidProtocolBufferException {
         if(byteBuffer == null || byteBuffer.array().length == 0) {
             return null;
         }
-        try {
-            return OrcProto.StripeFooter.parseFrom(byteBuffer.array());
-        } catch (InvalidProtocolBufferException e) {
-            LOG.warn("Failed to parse stripe footer, " + e.getMessage());
-            return null;
-        }
+        return OrcProto.StripeFooter.parseFrom(byteBuffer.array());
     }
 
     public static ByteBuffer serializeRowIndex(OrcProto.RowIndex[] rowGroupIndex) {
@@ -64,7 +56,7 @@ public class OrcSerializeUtils {
     }
 
     public static OrcProto.RowIndex[] deserializeRowIndex(ByteBuffer byteBuffer,
-                                                          int rowIndexCount) {
+                                                          int rowIndexCount) throws IOException {
         if(rowIndexCount == 0 || byteBuffer == null || byteBuffer.array().length == 0) {
             return null;
         }
@@ -81,12 +73,7 @@ public class OrcSerializeUtils {
         int index = 0;
         for(int rowIndexLength: rowIndexLengthList) {
             CodedInputStream codedInputStream = CodedInputStream.newInstance(bytes, currentOffset, rowIndexLength);
-            try {
-                rowGroupIndex[index++] = OrcProto.RowIndex.parseFrom(codedInputStream);
-            } catch (IOException e) {
-                e.printStackTrace();
-                return null;
-            }
+            rowGroupIndex[index++] = OrcProto.RowIndex.parseFrom(codedInputStream);
             currentOffset += rowIndexLength;
         }
         return rowGroupIndex;

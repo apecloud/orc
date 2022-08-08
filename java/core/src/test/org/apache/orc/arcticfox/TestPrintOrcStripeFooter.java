@@ -5,6 +5,7 @@ import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.List;
 
+import com.google.protobuf.InvalidProtocolBufferException;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.hive.ql.exec.vector.VectorizedRowBatch;
@@ -34,8 +35,14 @@ public class TestPrintOrcStripeFooter {
         List<Object> orcIndexStripeFooterOrcTail = getRecordReaderImpl(ORC_FILE_PATH);
         OrcProto.StripeFooter stripeFooter = (OrcProto.StripeFooter) orcIndexStripeFooterOrcTail.get(1);
 
-        ByteBuffer byteBuffer = OrcSerializeUtils.serializeStripeFooter(stripeFooter);
-        assert stripeFooter.equals(OrcSerializeUtils.deserializeStripeFooter(byteBuffer));
+        ByteBuffer byteBuffer = SerializeUtils.serializeStripeFooter(stripeFooter);
+        OrcProto.StripeFooter deserializedStripeFooter = null;
+        try {
+            deserializedStripeFooter = SerializeUtils.deserializeStripeFooter(byteBuffer);
+        } catch (InvalidProtocolBufferException e) {
+            e.printStackTrace();
+        }
+        assert stripeFooter.equals(deserializedStripeFooter);
     }
 
     @Test
@@ -46,9 +53,13 @@ public class TestPrintOrcStripeFooter {
         OrcProto.StripeFooter stripeFooter = (OrcProto.StripeFooter) orcIndexStripeFooterOrcTail.get(1);
         OrcProto.RowIndex[] rowGroupIndex = (OrcProto.RowIndex[]) orcIndexStripeFooterOrcTail.get(2);
 
-        ByteBuffer byteBuffer = OrcSerializeUtils.serializeRowIndex(rowGroupIndex);
-        OrcProto.RowIndex[] rowGroupIndexSerialize = OrcSerializeUtils.deserializeRowIndex(
-                byteBuffer, stripeFooter.getColumnsCount());
+        ByteBuffer byteBuffer = SerializeUtils.serializeRowIndex(rowGroupIndex);
+        OrcProto.RowIndex[] rowGroupIndexSerialize = null;
+        try {
+            rowGroupIndexSerialize = SerializeUtils.deserializeRowIndex(byteBuffer, stripeFooter.getColumnsCount());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         assert Arrays.equals(rowGroupIndex, rowGroupIndexSerialize);
     }

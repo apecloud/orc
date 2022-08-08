@@ -545,7 +545,7 @@
       </dependency>
       <dependency>
         <groupId>org.apache.orc</groupId>
-        <artifactId>arcticfox-orc-core</artifactId>
+        <artifactId>orc-core-arcticfox</artifactId>
         <version>1.7.5</version>
       </dependency>
       <dependency>
@@ -877,7 +877,6 @@
         <version>1.10.19</version>
         <scope>test</scope>
       </dependency>
-
     </dependencies>
   </dependencyManagement>
 </project>
