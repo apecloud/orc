@@ -15,9 +15,10 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>org.apache</groupId>
-    <artifactId>apache</artifactId>
-    <version>23</version>
+    <groupId>com.alibaba.polardbx</groupId>
+    <artifactId>arcticfox-orc</artifactId>
+    <version>5.4.13-SNAPSHOT</version>
+    <relativePath>../pom.xml</relativePath>
   </parent>
   <groupId>org.apache.orc</groupId>
   <artifactId>orc</artifactId>
@@ -35,19 +36,6 @@
      current query.
   </description>
   <inceptionYear>2013</inceptionYear>
-
-  <distributionManagement>
-    <repository>
-      <id>nexus-releases</id>
-      <name>maven-releases</name>
-      <url>http://52.83.27.129:8081/repository/maven-releases/</url>
-    </repository>
-    <snapshotRepository>
-      <id>nexus-snapshots</id>
-      <name>maven-snapshots</name>
-      <url>http://52.83.27.129:8081/repository/maven-snapshots/</url>
-    </snapshotRepository>
-  </distributionManagement>
 
   <mailingLists>
     <mailingList>
@@ -78,8 +66,8 @@
     <test.tmp.dir>${project.build.directory}/testing-tmp</test.tmp.dir>
     <example.dir>${project.basedir}/../../examples</example.dir>
 
-    <min.hadoop.version>2.2.0</min.hadoop.version>
-    <hadoop.version>2.7.3</hadoop.version>
+    <min.hadoop.version>3.2.2</min.hadoop.version>
+    <hadoop.version>3.2.2</hadoop.version>
     <tools.hadoop.version>2.10.1</tools.hadoop.version>
     <storage-api.version>2.8.1</storage-api.version>
     <zookeeper.version>3.6.2</zookeeper.version>
