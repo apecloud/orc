@@ -25,7 +25,7 @@
 
   <artifactId>arcticfox-orc-core</artifactId>
   <packaging>jar</packaging>
-  <name>arcticfox-orc-core</name>
+  <name>${project.artifactId} module for Arcticfox ${project.version}</name>
   <description>
     The core reader and writer for ORC files. Uses the vectorized column batch
     for the in memory representation.
