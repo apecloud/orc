@@ -17,15 +17,15 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>org.apache.orc</groupId>
-    <artifactId>orc</artifactId>
-    <version>1.7.5</version>
+    <groupId>com.alibaba.polardbx</groupId>
+    <artifactId>arcticfox-orc</artifactId>
+    <version>5.4.13-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
-  <artifactId>orc-core-arcticfox</artifactId>
+  <artifactId>arcticfox-orc-core</artifactId>
   <packaging>jar</packaging>
-  <name>ORC Core</name>
+  <name>arcticfox-orc-core</name>
   <description>
     The core reader and writer for ORC files. Uses the vectorized column batch
     for the in memory representation.
@@ -80,16 +80,16 @@
   </dependencies>
 
   <build>
-    <sourceDirectory>${basedir}/src/java</sourceDirectory>
-    <testSourceDirectory>${basedir}/src/test</testSourceDirectory>
+    <sourceDirectory>src/java</sourceDirectory>
+    <testSourceDirectory>src/test</testSourceDirectory>
     <resources>
       <resource>
-	<directory>${basedir}/src/resources</directory>
+	<directory>src/resources</directory>
       </resource>
     </resources>
     <testResources>
       <testResource>
-        <directory>${basedir}/src/test/resources</directory>
+        <directory>src/test/resources</directory>
       </testResource>
     </testResources>
     <plugins>
