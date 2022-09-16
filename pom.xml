@@ -79,6 +79,7 @@
     <surefire.version>3.0.0-M5</surefire.version>
     <junit.version>5.8.2</junit.version>
     <mockito.version>3.11.2</mockito.version>
+    <checkstyle.skip>true</checkstyle.skip>
   </properties>
 
   <build>
