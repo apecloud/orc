@@ -405,7 +405,6 @@
                 <artifactSet>
                   <includes>
                     <include>com.google.protobuf:protobuf-java</include>
-                    <include>org.apache.hive:hive-storage-api</include>
                   </includes>
                 </artifactSet>
                 <shadedArtifactAttached>true</shadedArtifactAttached>
