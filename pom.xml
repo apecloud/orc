@@ -66,8 +66,8 @@
     <test.tmp.dir>${project.build.directory}/testing-tmp</test.tmp.dir>
     <example.dir>${project.basedir}/../../examples</example.dir>
 
-    <min.hadoop.version>3.2.2</min.hadoop.version>
-    <hadoop.version>3.2.2</hadoop.version>
+    <min.hadoop.version>3.3.4</min.hadoop.version>
+    <hadoop.version>3.3.4</hadoop.version>
     <tools.hadoop.version>2.10.1</tools.hadoop.version>
     <storage-api.version>2.8.1</storage-api.version>
     <zookeeper.version>3.6.2</zookeeper.version>
@@ -505,8 +505,8 @@
         <jdk>[17,)</jdk>
       </activation>
       <properties>
-        <min.hadoop.version>3.2.2</min.hadoop.version>
-        <hadoop.version>3.2.2</hadoop.version>
+        <min.hadoop.version>3.3.4</min.hadoop.version>
+        <hadoop.version>3.3.4</hadoop.version>
         <tools.hadoop.version>2.10.1</tools.hadoop.version>
       </properties>
     </profile>
@@ -527,6 +527,10 @@
           <exclusion>
             <groupId>org.apache.hadoop</groupId>
             <artifactId>hadoop-hdfs</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>org.apache.hadoop</groupId>
+            <artifactId>hadoop-client-api</artifactId>
           </exclusion>
         </exclusions>
       </dependency>
