@@ -17,15 +17,13 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>com.alibaba.polardbx</groupId>
-    <artifactId>arcticfox-orc</artifactId>
-    <version>5.4.13-SNAPSHOT</version>
-    <relativePath>../pom.xml</relativePath>
+    <groupId>com.apecloud.foxlake</groupId>
+    <artifactId>foxlake-orc</artifactId>
+    <version>${revision}</version>
   </parent>
 
-  <artifactId>arcticfox-orc-core</artifactId>
+  <artifactId>foxlake-orc-core</artifactId>
   <packaging>jar</packaging>
-  <name>${project.artifactId} module for Arcticfox ${project.version}</name>
   <description>
     The core reader and writer for ORC files. Uses the vectorized column batch
     for the in memory representation.
